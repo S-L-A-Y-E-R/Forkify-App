@@ -8,7 +8,7 @@ class ResultsView extends View {
     return this._data
       .map((recipe) => {
         return `  <li class="preview">
-            <a class="preview__link preview__link--active" href="#${recipe.id}">
+            <a class="preview__link" href="#${recipe.id}">
               <figure class="preview__fig">
                 <img src="${recipe.image}" alt="${recipe.title}" />
               </figure>
