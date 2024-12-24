@@ -2,15 +2,47 @@ import icons from "url:../../img/icons.svg";
 
 export class View {
   renderView(data) {
-    this._data = data;
     if (!data || (Array.isArray(data) && data.length === 0))
       return this.renderErrorMessage(
         "There is no recipes found for you search keyword. Please try another keyword!"
       );
+    this._data = data;
 
     const markup = this._generateMarkup();
     this._clear();
     this._parentElem.insertAdjacentHTML("afterbegin", markup);
+  }
+
+  updateView(data) {
+    if (!data || (Array.isArray(data) && data.length === 0))
+      return this.renderErrorMessage(
+        "There is no recipes found for you search keyword. Please try another keyword!"
+      );
+    this._data = data;
+
+    const newMarkup = this._generateMarkup();
+    const virtualDOM = document
+      .createRange()
+      .createContextualFragment(newMarkup);
+    const currentElements = Array.from(this._parentElem.querySelectorAll("*"));
+    const newElements = Array.from(virtualDOM.querySelectorAll("*"));
+
+    newElements.forEach((newElem, i) => {
+      const currentElem = currentElements[i];
+
+      if (
+        !newElem.isEqualNode(currentElem) &&
+        newElem.firstChild?.nodeValue.trim() !== ""
+      ) {
+        currentElem.textContent = newElem.textContent;
+      }
+
+      if (!newElem.isEqualNode(currentElem)) {
+        Array.from(newElem.attributes).forEach((attr) =>
+          currentElem.setAttribute(attr.name, attr.value)
+        );
+      }
+    });
   }
 
   renderErrorMessage(message = this._errorMessage) {
