@@ -4,6 +4,10 @@ class BookmarksView extends View {
   _parentElem = document.querySelector(".bookmarks");
   _data;
 
+  addHandlerGetBookmarks(handler) {
+    window.addEventListener("load", handler);
+  }
+
   _generateMarkup() {
     return this._data
       .map((recipe) => {

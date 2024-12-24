@@ -67,7 +67,14 @@ const bookmarksController = () => {
   bookmarksView.renderView(model.state.bookmarks);
 };
 
+const bookmarksStorageController = () => {
+  model.getBookmarksFromStorage();
+
+  bookmarksView.renderView(model.state.bookmarks);
+};
+
 const init = () => {
+  bookmarksView.addHandlerGetBookmarks(bookmarksStorageController);
   recipeView.addHandlerRender(recipeController);
   recipeView.addHandlerUpdateServings(updateServingsController);
   recipeView.addHandlerBookmark(bookmarksController);
