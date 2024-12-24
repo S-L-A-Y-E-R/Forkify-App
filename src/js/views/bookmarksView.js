@@ -1,7 +1,7 @@
 import { View } from "./View";
 
-class ResultsView extends View {
-  _parentElem = document.querySelector(".results");
+class BookmarksView extends View {
+  _parentElem = document.querySelector(".bookmarks");
   _data;
 
   _generateMarkup() {
@@ -27,4 +27,4 @@ class ResultsView extends View {
   }
 }
 
-export default new ResultsView();
+export default new BookmarksView();

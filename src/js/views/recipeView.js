@@ -5,7 +5,7 @@ import { View } from "./View";
 class RecipeView extends View {
   _parentElem = document.querySelector(".recipe");
   _data;
-  _errorMessage = "We could'nt found this recipe. Please try another one!";
+  _errorMessage = "We could'nt find this recipe. Please try another one!";
   _message = "";
 
   addHandlerRender(handler) {
@@ -20,6 +20,14 @@ class RecipeView extends View {
       if (!btn) return;
       const updatedServings = +btn.dataset.update;
       if (updatedServings > 0) handler(updatedServings);
+    });
+  }
+
+  addHandlerBookmark(handler) {
+    this._parentElem.addEventListener("click", (e) => {
+      const btn = e.target.closest(".btn--bookmark");
+      if (!btn) return;
+      handler();
     });
   }
 
@@ -72,9 +80,11 @@ class RecipeView extends View {
               <div class="recipe__user-generated">
                 
               </div>
-              <button class="btn--round">
+              <button class="btn--round btn--bookmark">
                 <svg class="">
-                  <use href="${icons}#icon-bookmark-fill"></use>
+                  <use href="${icons}#icon-bookmark${
+      this._data.bookmarked ? "-fill" : ""
+    }"></use>
                 </svg>
               </button>
             </div>

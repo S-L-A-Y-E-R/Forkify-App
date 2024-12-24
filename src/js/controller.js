@@ -3,6 +3,7 @@ import "regenerator-runtime/runtime";
 import * as model from "./model";
 import recipeView from "./views/recipeView";
 import searchView from "./views/searchView";
+import bookmarksView from "./views/bookmarksView";
 import resultsView from "./views/resultsView";
 import paginationView from "./views/paginationView";
 
@@ -15,6 +16,10 @@ const recipeController = async () => {
     if (!id) return;
 
     recipeView.renderSpinner();
+
+    resultsView.updateView(model.getResultsPerPage());
+
+    bookmarksView.updateView(model.state.bookmarks);
 
     await model.getRecipe(id);
 
@@ -53,9 +58,19 @@ const updateServingsController = (newServings) => {
   recipeView.updateView(model.state.recipe);
 };
 
+const bookmarksController = () => {
+  model.state.recipe.bookmarked
+    ? model.removeBookmark(model.state.recipe.id)
+    : model.addBookmark(model.state.recipe);
+  recipeView.updateView(model.state.recipe);
+
+  bookmarksView.renderView(model.state.bookmarks);
+};
+
 const init = () => {
   recipeView.addHandlerRender(recipeController);
   recipeView.addHandlerUpdateServings(updateServingsController);
+  recipeView.addHandlerBookmark(bookmarksController);
   searchView.addHandlerSearch(searchController);
   paginationView.addHandlerClick(paginationController);
 };

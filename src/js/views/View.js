@@ -2,10 +2,6 @@ import icons from "url:../../img/icons.svg";
 
 export class View {
   renderView(data) {
-    if (!data || (Array.isArray(data) && data.length === 0))
-      return this.renderErrorMessage(
-        "There is no recipes found for you search keyword. Please try another keyword!"
-      );
     this._data = data;
 
     const markup = this._generateMarkup();
@@ -14,10 +10,6 @@ export class View {
   }
 
   updateView(data) {
-    if (!data || (Array.isArray(data) && data.length === 0))
-      return this.renderErrorMessage(
-        "There is no recipes found for you search keyword. Please try another keyword!"
-      );
     this._data = data;
 
     const newMarkup = this._generateMarkup();
