@@ -1,5 +1,5 @@
-import { getJSON } from "./helpers";
-import { API_URL, RESULTS_PER_PAGE } from "./config";
+import { getJSON, sendJSON } from "./helpers";
+import { API_URL, RESULTS_PER_PAGE, API_KEY } from "./config";
 
 export const state = {
   recipe: {},
@@ -14,7 +14,7 @@ export const state = {
 
 export const getRecipe = async (id) => {
   try {
-    const { recipe } = (await getJSON(`${API_URL}${id}`)).data;
+    const { recipe } = (await getJSON(`${API_URL}${id}?key=${API_KEY}`)).data;
     state.recipe = {
       id: recipe.id,
       title: recipe.title,
@@ -38,7 +38,7 @@ export const getRecipe = async (id) => {
 export const getSearchResults = async (query) => {
   try {
     state.search.query = query;
-    const { data } = await getJSON(`${API_URL}?search=${query}`);
+    const { data } = await getJSON(`${API_URL}?search=${query}&key=${API_KEY}`);
     state.search.results = data.recipes.map((recipe) => {
       return {
         id: recipe.id,
@@ -92,5 +92,46 @@ export const getBookmarksFromStorage = () => {
   const storage = localStorage.getItem("bookmarks");
   if (storage) {
     state.bookmarks = JSON.parse(storage);
+  }
+};
+
+export const uploadRecipe = async (data) => {
+  try {
+    const ingredients = Object.entries(data)
+      .filter((entry) => entry[0].startsWith("ingredient") && entry[1] !== "")
+      .map((ing) => {
+        const tempIng = ing[1].split(",");
+        return {
+          quantity: tempIng[0] === "" ? null : +tempIng[0],
+          unit: tempIng[1],
+          description: tempIng[2],
+        };
+      });
+
+    const newRecipe = {
+      ingredients,
+      source_url: data.sourceUrl,
+      image_url: data.image,
+      title: data.title,
+      publisher: data.publisher,
+      cooking_time: +data.cookingTime,
+      servings: +data.servings,
+    };
+    const { recipe } = (await sendJSON(`${API_URL}?key=${API_KEY}`, newRecipe))
+      .data;
+    state.recipe = {
+      id: recipe.id,
+      title: recipe.title,
+      publisher: recipe.publisher,
+      sourceUrl: recipe.source_url,
+      image: recipe.image_url,
+      servings: recipe.servings,
+      ingredients: recipe.ingredients,
+      cookingTime: recipe.cooking_time,
+      key: recipe.key,
+    };
+    addBookmark(state.recipe);
+  } catch (error) {
+    throw error;
   }
 };

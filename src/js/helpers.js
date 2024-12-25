@@ -20,3 +20,25 @@ export const getJSON = async (url) => {
     throw error;
   }
 };
+
+export const sendJSON = async (url, data) => {
+  try {
+    const response = await Promise.race([
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }),
+      timeout(TIMEOUT_SEC),
+    ]);
+    const resData = await response.json();
+
+    if (!response.ok) throw new Error(resData.message);
+
+    return resData;
+  } catch (error) {
+    throw error;
+  }
+};

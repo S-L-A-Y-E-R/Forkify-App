@@ -1,4 +1,5 @@
 import { View } from "./View";
+import { icons } from "url:../../img/icons.svg";
 
 class ResultsView extends View {
   _parentElem = document.querySelector(".results");
@@ -18,6 +19,13 @@ class ResultsView extends View {
               <div class="preview__data">
                 <h4 class="preview__title">${recipe.title}</h4>
                 <p class="preview__publisher">${recipe.publisher}</p>
+                <div class="recipe__user-generated ${
+                  !this._data.key ? "hidden" : ""
+                }">
+                 <svg>
+                    <use href="${icons}.svg#icon-user"></use>
+                 </svg>
+              </div>
               </div>
             </a>
           </li>
